@@ -11,5 +11,5 @@ vim.cmd([[highlight CursorLine ctermbg=0 cterm=NONE guibg=lightgrey]])
 vim.cmd([[highlight CursorLineNr cterm=NONE gui=NONE]])
 vim.o.expandtab = true
 vim.o.hlsearch = true
-vim.o.shiftwidth = 2
+vim.o.shiftwidth = 4
 vim.o.syntax = 'on'
