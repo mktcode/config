@@ -229,3 +229,6 @@ exec --no-startup-id feh --bg-scale /home/mkt/Pictures/wallpaper.png
 
 # Screenshot
 bindsym Print exec --no-startup-id maim "/home/$USER/Pictures/$(date +%Y%m%d%H%M%S).png"
+
+# Hide mouse
+exec --no-startup-id unclutter &
