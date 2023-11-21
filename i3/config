@@ -207,8 +207,9 @@ client.unfocused        #6272a4 #282a36 #6272a4 #282a36
 client.urgent           #ff5555 #282a36 #ff5555 #282a36
 
 # Enable touchpad
-exec xinput set-prop "MSFT0001:00 06CB:CD3E Touchpad" "libinput Tapping Enabled" 1
-exec xinput set-prop "MSFT0001:00 06CB:CD3E Touchpad" "libinput Natural Scrolling Enabled" 1
+exec --no-startup-id xinput set-prop "MSFT0001:00 06CB:CD3E Touchpad" "libinput Tapping Enabled" 1
+exec --no-startup-id xinput set-prop "MSFT0001:00 06CB:CD3E Touchpad" "libinput Natural Scrolling Enabled" 1
+exec --no-startup-id xinput set-prop "MSFT0001:00 06CB:CD3E Touchpad" "libinput Disable While Typing Enabled" 0
 
 # Open stuff on specific workspaces
 assign [class="terminal-local"] 1
