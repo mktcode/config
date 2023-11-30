@@ -1,0 +1,65 @@
+#DRAFT
+#cloud-config
+ssh_pwauth: false
+package_update: true
+package_upgrade: true
+
+# Install necessary packages
+packages:
+  - nginx
+  - php-fpm
+  - php-mysql
+  - mariadb-server
+
+runcmd:
+  # Secure MariaDB installation
+  # - mysql_secure_installation
+  # Won't work like this because it's interactive
+
+  # Create a database for WordPress
+  - mysql -e "CREATE DATABASE wordpress;"
+
+  # Download and extract WordPress
+  - wget https://wordpress.org/wordpress-6.4.1.tar.gz
+  - tar -xzvf wordpress-6.4.1.tar.gz
+  - rm wordpress-6.4.1.tar.gz
+  - mv wordpress /var/www/html/wordpress
+
+  # Configure Nginx for WordPress
+  - rm /etc/nginx/sites-enabled/default
+  - rm /var/www/html/index.nginx-debian.html
+  - echo "server {
+      listen 80;
+      root /var/www/html/wordpress;
+      index index.php index.html index.htm;
+      server_name wp1.markus-kottlaender.de;
+
+      location / {
+          try_files $uri $uri/ /index.php?$args;
+      }
+
+      location ~ \.php$ {
+          include snippets/fastcgi-php.conf;
+          fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
+          fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+          include fastcgi_params;
+      }
+  }" > /etc/nginx/sites-available/wordpress
+  - ln -s /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/
+
+  # Configure WordPress for multisite
+  - cp /var/www/html/wordpress/wp-config-sample.php /var/www/html/wordpress/wp-config.php
+  - sed -i "s/database_name_here/wordpress/g" /var/www/html/wordpress/wp-config.php
+  - sed -i "s/username_here/root/g" /var/www/html/wordpress/wp-config.php
+  - sed -i "s/password_here//g" /var/www/html/wordpress/wp-config.php
+  - echo "define('WP_ALLOW_MULTISITE', true);" >> /var/www/html/wordpress/wp-config.php
+
+  # Install WP-CLI
+  - curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+  - chmod +x wp-cli.phar
+  - mv wp-cli.phar /usr/local/bin/wp
+
+  # Set permissions and restart Nginx and PHP-FPM
+  - chown -R www-data:www-data /var/www/html/wordpress
+  - systemctl restart nginx
+  - systemctl restart php8.2-fpm
