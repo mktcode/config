@@ -34,7 +34,7 @@ runcmd:
       listen 80;
       root /var/www/html/wordpress;
       index index.php index.html index.htm;
-      server_name wp1.markus-kottlaender.de;
+      server_name wp1.markus-kottlaender.de *.wp1.markus-kottlaender.de;
 
       location = /favicon.ico {
           log_not_found off;
